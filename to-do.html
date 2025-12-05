@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event List</title>
+    <style>
+         body {
+            font-family: Arial, Helvetica, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: white;
+            margin: 0 0 20px 0;
+            font-size: 32px;
+        }
+
+        .event-list {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            width: 100%;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0 15px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+
+        button {
+            padding: 12px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .add-btn {
+            background: #10b981;
+            color: white;
+        }
+
+        .add-btn:hover {
+            background: #059669;
+        }
+
+        .clear-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background: #dc2626;
+        }
+
+        .delete-btn {
+            background: #f59e0b;
+            color: white;
+            padding: 8px 15px;
+            font-size: 14px;
+            margin-left: auto;
+        }
+
+        .delete-btn:hover {
+            background: #d97706;
+        }
+
+        #list {
+            margin-top: 20px;
+        }
+
+        .event {
+            background: white;
+            padding: 15px;
+            margin: 12px 0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s;
+        }
+
+        .event:hover {
+            transform: translateX(5px);
+        }
+
+        .event span {
+            flex: 1;
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .event input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .event.done {
+            opacity: 0.6;
+            background: #f3f4f6;
+        }
+
+        .event.done span {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <div class="event-list">
+        <h1>📅 Event List</h1>
+
+        <input type="text" id="name" placeholder="Enter event name">
+        <input type="date" id="date">
+
+        <button class="add-btn" onclick="addEvent()">Add Event</button>
+        <button class="clear-btn" onclick="clearAll()">Clear All</button>
+    </div>
+
+    <div id="list"></div>
+
+    <script>
+        let events = [];
+
+        function addEvent(){
+            const name = document.getElementById('name').value;
+            const date = document.getElementById('date').value;
+
+            if(name && date){
+                events.push({id: Date.now(),name,date, done:false});
+                document.getElementById('name').value = '';
+                document.getElementById('date').value = '';
+                show();
+            }
+        }
+
+        function deleteEvent(id){
+            events = events.filter(e => e.id != id);
+            show()
+        }
+
+        function clearAll(){
+            events = [];
+            show()
+        }
+
+        function toggle(id) {
+            events.find(e => e.id === id).done = !events.find(e => e.id === id).done;
+            show();
+        }
+
+        function show(){
+            let html = '';
+
+            for (let e of events) {
+                let checkedText = e.done ? 'checked' : '';
+                let doneClass = e.done ? 'done' : '';
+
+                html += '<div class="event ' + doneClass + '">';
+                html += '<input type="checkbox" ' + checkedText + ' onchange="toggle(' + e.id + ')">';
+                html += '<span>' + e.name + ' - ' + e.date + '</span>';
+                html += '<button class="delete-btn" onclick="deleteEvent(' + e.id + ')">Delete</button>';
+                html += '</div>';
+            }
+
+            document.getElementById('list').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
